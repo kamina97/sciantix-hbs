@@ -22,16 +22,34 @@ void SetMatrix( )
    * @brief This routine defines the available options for fuel matrices and their properties.
    * 
    */
-	for (int k = 0; k < 3; ++k)
-	{
-		switch (k)
-		{
-		  case 0: UO2();                MapMatrix();        break;
-		  case 1: UO2HBS();             MapMatrix();        break;
 
-		  default:                                          break;
+	switch (int(input_variable[iv["iFuelMatrix"]].getValue()))
+	{
+		case 0: 
+		{
+			UO2();
+			MapMatrix();
+
+			break;
 		}
+
+		case 1: 
+		{
+			UO2();
+			MapMatrix();
+
+			UO2HBS();
+			MapMatrix();
+
+			break;
+		}
+		
+		default:
+			ErrorMessages::Switch("SetMatrix.cpp", "iFuelMatrix", int(input_variable[iv["iFuelMatrix"]].getValue()));
+			break;
 	}
+
+
 }
 
 void Matrix::setGrainBoundaryMobility(int input_value)
@@ -53,7 +71,7 @@ void Matrix::setGrainBoundaryMobility(int input_value)
 
 	case 1:
 	{
-		/** 
+		/**
 		 * @brief iGrainGrowth = 1 corresponds to the Ainscough et al. (1973) grain-boundary mobility
 		 * 
 		*/
@@ -69,7 +87,7 @@ void Matrix::setGrainBoundaryMobility(int input_value)
 		 * 
 		*/
 
-		reference += "Van Uffelen et al. JNM, 434 (2013) 287–29.\n\t";
+		reference += "Van Uffelen et al. JNM, 434 (2013) 287-29.\n\t";
 		grain_boundary_mobility = 1.360546875e-15 * exp(- 46524.0 / history_variable[hv["Temperature"]].getFinalValue());
 		break;
 	}
@@ -92,49 +110,49 @@ void Matrix::setGrainBoundaryVacancyDiffusivity(int input_value)
 
 	switch (input_value)
 	{
-	case 0:
+		case 0:
+		{
+			/**
+			 * @brief iGrainBoundaryVacancyDiffusivity = 0 corresponds to a constant diffusivity value, equal to 1e-30 m^2/s.
+			 * 
+			 */
+
+			grain_boundary_diffusivity = 1e-30;
+			reference += "iGrainBoundaryVacancyDiffusivity: constant value (1e-30 m^2/s).\n\t";
+
+			break;
+		}
+
+		case 1:
+		{
+			/**
+			 * @brief iGrainBoundaryVacancyDiffusivity = 1 corresponds to the relation from @ref Reynolds and Burton, JNM, 82 (1979) 22-25.
+			 * 
+			 */
+
+			grain_boundary_diffusivity = 6.9e-04 * exp(- 5.35e-19 / (boltzmann_constant * history_variable[hv["Temperature"]].getFinalValue()));
+			reference += "iGrainBoundaryVacancyDiffusivity: from Reynolds and Burton, JNM, 82 (1979) 22-25.\n\t";
+
+			break;
+		}
+
+		case 2:
+		{
+			/**
+			 * @brief iGrainBoundaryVacancyDiffusivity = 2 corresponds to the correction from @ref Pastore et al., JNM, 456 (2015) 156.
+			 * 
+			 */
+
+			grain_boundary_diffusivity = 8.86e-6 * exp(- 5.75e-19 / (boltzmann_constant * history_variable[hv["Temperature"]].getFinalValue()));
+			reference += "iGrainBoundaryVacancyDiffusivity: from Pastore et al., JNM, 456 (2015) 156.\n\t";
+
+			break;
+		}
+
+	case 5:
 	{
 		/**
-		 * @brief iGrainBoundaryVacancyDiffusivity = 0 corresponds to a constant diffusivity value, equal to 1e-30 m^2/s.
-		 * 
-		 */
-
-		grain_boundary_diffusivity = 1e-30;
-		reference += "iGrainBoundaryVacancyDiffusivity: constant value (1e-30 m^2/s).\n\t";
-
-		break;
-	}
-
-	case 1:
-	{
-		/**
-		 * @brief iGrainBoundaryVacancyDiffusivity = 1 corresponds to the relation from @ref Reynolds and Burton, JNM, 82 (1979) 22-25.
-		 * 
-		 */
-
-		grain_boundary_diffusivity = 6.9e-04 * exp(- 5.35e-19 / (boltzmann_constant * history_variable[hv["Temperature"]].getFinalValue()));
-		reference += "iGrainBoundaryVacancyDiffusivity: from Reynolds and Burton, JNM, 82 (1979) 22-25.\n\t";
-
-		break;
-	}
-
-	case 2:
-	{
-		/**
-		 * @brief iGrainBoundaryVacancyDiffusivity = 2 corresponds to the correction from @ref Pastore et al., JNM, 456 (2015) 156.
-		 * 
-		 */
-
-		grain_boundary_diffusivity = 8.86e-6 * exp(- 5.75e-19 / (boltzmann_constant * history_variable[hv["Temperature"]].getFinalValue()));
-		reference += "iGrainBoundaryVacancyDiffusivity: from Pastore et al., JNM, 456 (2015) 156.\n\t";
-
-		break;
-	}
-
-	case 4:
-	{
-		/**
-		 * @brief iGrainBoundaryVacancyDiffusivity = 4 corresponds to the vacancy diffusivities along HBS grain boundaries.
+		 * @brief iGrainBoundaryVacancyDiffusivity = 5 corresponds to the vacancy diffusivities along HBS grain boundaries.
 		 * This model is from @ref Barani et al., JNM 563 (2022) 153627.
 		 * 
 		 */
@@ -157,6 +175,12 @@ void Matrix::setGrainBoundaryVacancyDiffusivity(int input_value)
 
 void Matrix::setPoreNucleationRate()
 {
+	/**
+	 * @brief nucleation rate of HBS pores.
+	 * This model is from @ref *Barani et al., JNM 563 (2022) 153627*.
+	 * 
+	 */
+	
 	double sf_nucleation_rate_porosity = 1.25e-6;
 
 	pore_nucleation_rate = (5.0e17 * 2.77e-7 * 3.54 *
@@ -165,4 +189,40 @@ void Matrix::setPoreNucleationRate()
     );
 
 	pore_nucleation_rate *= sf_nucleation_rate_porosity;
+}
+
+
+void Matrix::setPoreResolutionRate()
+{
+	/**
+	 * @brief re-solution rate of gas atoms from HBS pores.
+	 * This model is from @ref *Barani et al., JNM 563 (2022) 153627*.
+	 * 
+	 */
+	
+	double correction_coefficient = (1.0 - exp(pow( -sciantix_variable[sv["HBS pore radius"]].getFinalValue() / (3.0*3.0*1.0e-9), 3)));
+    
+	pore_resolution_rate =
+		2.0e-23 * history_variable[hv["Fission rate"]].getFinalValue() * correction_coefficient *
+    (3.0 * 1.0e-9 / (3.0 * 1.0e-9 + sciantix_variable[sv["HBS pore radius"]].getFinalValue())) * 
+		(1.0e-9 / (1.0e-9 + sciantix_variable[sv["HBS pore radius"]].getFinalValue()));
+}
+
+
+void Matrix::setPoreTrappingRate()
+{
+	/**
+	 * @brief trapping rate of gas atoms in HBS pores.
+	 * This model is from @ref *Barani et al., JNM 563 (2022) 153627*.
+	 * 
+	 */
+
+	reference += "model from Barani et al., JNM 563 (2022) 153627.\n\t";
+
+	const double pi = CONSTANT_NUMBERS_H::MathConstants::pi;
+
+	pore_trapping_rate = 4.0 * pi * matrix[sma["UO2HBS"]].getGrainBoundaryVacancyDiffusivity() *
+    sciantix_variable[sv["Xe at grain boundary"]].getFinalValue() *
+    sciantix_variable[sv["HBS pore radius"]].getFinalValue() *
+    (1.0 + 1.8 * pow(sciantix_variable[sv["HBS porosity"]].getFinalValue(), 1.3));
 }

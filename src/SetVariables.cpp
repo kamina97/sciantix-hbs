@@ -30,6 +30,7 @@ void SetVariables(int Sciantix_options[], double Sciantix_history[], double Scia
 	// Input variable
 	// The vector is used to collect all user input settings relating to the choice of SCIANTIX models
 	// -----------------------------------------------------------------------------------------------
+	
 	int iv_counter(0);
 	if (input_variable.empty())
 	{
@@ -124,30 +125,24 @@ void SetVariables(int Sciantix_options[], double Sciantix_history[], double Scia
 		++iv_counter;
 
 		input_variable.emplace_back();
-		input_variable[iv_counter].setName("iHBS_FGDiffusionCoefficient");
+		input_variable[iv_counter].setName("iHighBurnupStructurePorosity");
 		input_variable[iv_counter].setValue(Sciantix_options[18]);
 		++iv_counter;
 
 		input_variable.emplace_back();
-		input_variable[iv_counter].setName("iHighBurnupStructurePorosity");
+		input_variable[iv_counter].setName("iHeliumProductionRate");
 		input_variable[iv_counter].setValue(Sciantix_options[19]);
 		++iv_counter;
 
 		input_variable.emplace_back();
-		input_variable[iv_counter].setName("iHeliumProductionRate");
+		input_variable[iv_counter].setName("iStoichiometryDeviation");
 		input_variable[iv_counter].setValue(Sciantix_options[20]);
 		++iv_counter;
 
 		input_variable.emplace_back();
-		input_variable[iv_counter].setName("iStoichiometryDeviation");
+		input_variable[iv_counter].setName("iBubbleDiffusivity");
 		input_variable[iv_counter].setValue(Sciantix_options[21]);
 		++iv_counter;
-
-		input_variable.emplace_back();
-		input_variable[iv_counter].setName("iBubbleDiffusivity");
-		input_variable[iv_counter].setValue(Sciantix_options[22]);
-		++iv_counter;
-
 	}
 
 	MapInputVariable();
@@ -166,7 +161,7 @@ void SetVariables(int Sciantix_options[], double Sciantix_history[], double Scia
 
 	bool toOutputGrainBoundary(0);
 	if (input_variable[iv["iGrainBoundaryBehaviour"]].getValue() == 1) toOutputGrainBoundary = 1;
-	if (input_variable[iv["iGrainBoundaryBehaviour"]].getValue() == 4) toOutputGrainBoundary = 1;
+	if (input_variable[iv["iGrainBoundaryBehaviour"]].getValue() == 5) toOutputGrainBoundary = 1;
 
 	bool toOutputHighBurnupStructureFormation(0);
 	if (input_variable[iv["iHighBurnupStructureFormation"]].getValue() == 1) toOutputHighBurnupStructureFormation = 1;
@@ -174,9 +169,9 @@ void SetVariables(int Sciantix_options[], double Sciantix_history[], double Scia
 	bool toOutputStoichiometryDeviation(0);
 	if (input_variable[iv["iStoichiometryDeviation"]].getValue() > 0) toOutputStoichiometryDeviation = 1;
 
-	// ----------------------------------------------------------------------------
+	// ----------------
 	// Physics variable
-	// ----------------------------------------------------------------------------
+	// ----------------
 	
 	int pv_counter(0);
 
@@ -188,9 +183,10 @@ void SetVariables(int Sciantix_options[], double Sciantix_history[], double Scia
 	physics_variable[pv_counter].setOutput(0);
 	++pv_counter;
 
-	// ----------------------------------------------------------------------------
+	// ----------------
 	// History variable
-	// ----------------------------------------------------------------------------
+	// ----------------
+
 	int hv_counter(0);
 	history_variable.emplace_back();
 	history_variable[hv_counter].setName("Time");
@@ -980,32 +976,31 @@ void SetVariables(int Sciantix_options[], double Sciantix_history[], double Scia
 	sciantix_variable[sv_counter].setOutput(toOutputHighBurnupStructureFormation);
 	++sv_counter;
 
-
-	// ----------------------------------------------------------------------------
+	// ---------------
 	// Diffusion modes
-	// ----------------------------------------------------------------------------
+	// ---------------
 	for (int i = 0; i < n_modes; ++i)
 	{
-		xe_diffusion_modes[i] = Sciantix_diffusion_modes[i];
-		xe_diffusion_modes_solution[i] = Sciantix_diffusion_modes[1 * n_modes + i];
-		xe_diffusion_modes_bubbles[i] = Sciantix_diffusion_modes[2 * n_modes + i];
-		kr_diffusion_modes[i] = Sciantix_diffusion_modes[3 * n_modes + i];
-		kr_diffusion_modes_solution[i] = Sciantix_diffusion_modes[4 * n_modes + i];
-		kr_diffusion_modes_bubbles[i] = Sciantix_diffusion_modes[5 * n_modes + i];
-		he_diffusion_modes[i] = Sciantix_diffusion_modes[6 * n_modes + i];
-		he_diffusion_modes_solution[i] = Sciantix_diffusion_modes[7 * n_modes + i];
-		he_diffusion_modes_bubbles[i] = Sciantix_diffusion_modes[8 * n_modes + i];
-		xe133_diffusion_modes[i] = Sciantix_diffusion_modes[9 * n_modes + i];
-		xe133_diffusion_modes_solution[i] = Sciantix_diffusion_modes[10 * n_modes + i];
-		xe133_diffusion_modes_bubbles[i] = Sciantix_diffusion_modes[11 * n_modes + i];
-		kr85m_diffusion_modes[i] = Sciantix_diffusion_modes[12 * n_modes + i];
-		kr85m_diffusion_modes_solution[i] = Sciantix_diffusion_modes[13 * n_modes + i];
-		kr85m_diffusion_modes_bubbles[i] = Sciantix_diffusion_modes[14 * n_modes + i];
+		modes_initial_conditions[i] = Sciantix_diffusion_modes[i];
+		modes_initial_conditions[1 * n_modes + i] = Sciantix_diffusion_modes[1 * n_modes + i];
+		modes_initial_conditions[2 * n_modes + i] = Sciantix_diffusion_modes[2 * n_modes + i];
+		modes_initial_conditions[3 * n_modes + i] = Sciantix_diffusion_modes[3 * n_modes + i];
+		modes_initial_conditions[4 * n_modes + i] = Sciantix_diffusion_modes[4 * n_modes + i];
+		modes_initial_conditions[5 * n_modes + i] = Sciantix_diffusion_modes[5 * n_modes + i];
+		modes_initial_conditions[6 * n_modes + i] = Sciantix_diffusion_modes[6 * n_modes + i];
+		modes_initial_conditions[7 * n_modes + i] = Sciantix_diffusion_modes[7 * n_modes + i];
+		modes_initial_conditions[8 * n_modes + i] = Sciantix_diffusion_modes[8 * n_modes + i];
+		modes_initial_conditions[9 * n_modes + i] = Sciantix_diffusion_modes[9 * n_modes + i];
+		modes_initial_conditions[10 * n_modes + i] = Sciantix_diffusion_modes[10 * n_modes + i];
+		modes_initial_conditions[11 * n_modes + i] = Sciantix_diffusion_modes[11 * n_modes + i];
+		modes_initial_conditions[12 * n_modes + i] = Sciantix_diffusion_modes[12 * n_modes + i];
+		modes_initial_conditions[13 * n_modes + i] = Sciantix_diffusion_modes[13 * n_modes + i];
+		modes_initial_conditions[14 * n_modes + i] = Sciantix_diffusion_modes[14 * n_modes + i];
 	}
 
-	// ----------------------------------------------------------------------------
+	// ---------------
 	// Scaling factors
-	// ----------------------------------------------------------------------------
+	// ---------------
 	sf_resolution_rate = Sciantix_scaling_factors[0];
 	sf_trapping_rate = Sciantix_scaling_factors[1];
 	sf_nucleation_rate = Sciantix_scaling_factors[2];
@@ -1015,12 +1010,10 @@ void SetVariables(int Sciantix_options[], double Sciantix_history[], double Scia
 	sf_cent_parameter = Sciantix_scaling_factors[6];
 	sf_helium_production_rate = Sciantix_scaling_factors[7];
 
-	// ----------------------------------------------------------------------------
+	// ----
 	// Maps
-	// ----------------------------------------------------------------------------
+	// ----
 	MapHistoryVariable();
 	MapSciantixVariable();
 	MapPhysicsVariable();
-
-	// ----------------------------------------------------------------------------
 }

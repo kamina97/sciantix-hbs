@@ -3,8 +3,8 @@ Model #1: 	Effective burnup	: G. Khvostov et al., WRFPM-2005, Kyoto, Japan, 2005
 Model #2: 	Environment composition	Lewis et al. JNM 227 (1995) 83-109, D.R. Olander, Nucl. Technol. 74 (1986) 215.
 Model #3: 	UO2 thermochemistry	Blackburn (1973) J. Nucl. Mater., 46, 244-252.
 Model #4: 	Stoichiometry deviation	Carter and Lay, J. Nucl. Mater., 36:77-86, 1970. Abrefah, JNM., 208:98-110, 1994.
-Model #5: 	High burnup structure formation	: not considered.
-Model #6: 	High burnup structure porosity	not considered
+Model #5: 	High burnup structure formation	HBS not considered.
+Model #6: 	High burnup structure porosity	HBS not considered.
 Model #7: 	Grain growth	constant grain radius.
 Model #8: 	Grain-boundary sweeping	Not considered
 Model #9: 	Gas production - Xe in UO2	 
@@ -25,10 +25,6 @@ Model #22: 	Intergranular bubble evolution	: Pastore et al., NED, 256 (2013) 75-
 Matrix #0: 	UO2	
 	no grain-boundary mobility.
 	iGrainBoundaryVacancyDiffusivity: from Reynolds and Burton, JNM, 82 (1979) 22-25.
-	
-Matrix #1: 	UO2HBS	
-	no grain-boundary mobility.
-	iGrainBoundaryVacancyDiffusivity: constant value (1e-30 m^2/s).
 	
 
 System #0: 	Xe in UO2	Production rate = cumulative yield * fission rate density.
